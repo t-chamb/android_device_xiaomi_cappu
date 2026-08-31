@@ -88,7 +88,7 @@ service atcid-daemon-e /system/vendor/bin/atcid
 	disabled
 	oneshot
 
-on early_property:ro.build.type=eng
+on property:ro.build.type=eng
 start atci_service
 start atcid-daemon-e
 service audio-daemon /system/vendor/bin/audiocmdservice_atci

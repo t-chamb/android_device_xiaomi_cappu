@@ -16,6 +16,7 @@ ifneq ($(filter cappu,$(TARGET_DEVICE)),)
 
 LOCAL_PATH := $(call my-dir)
 
-include $(call all-makefiles-under,$(LOCAL_PATH))
+# RemovePackages is left out: the 17.1 tree's empty prebuilt is rejected on Android 12.
+include $(call all-named-subdir-makefiles,audio_remote_submix gatekeeper hidl libbt-vendor-mtk libmtk_symbols libshims libxlog power rootdir sensor vndk wifi_hal wpa_supplicant_8_lib)
 
 endif

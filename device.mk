@@ -22,8 +22,6 @@ PRODUCT_PROPERTY_OVERRIDES += \
 	persist.service.debuggable=1 \
 	persist.sys.usb.config=mtp,adb \
 	persist.sys.root_access=2 \
-	ro.secure=0 \
-	ro.adb.secure=0 \
 	ro.debuggable=1
 
 # API
@@ -112,11 +110,6 @@ PRODUCT_PACKAGES += \
     android.hardware.drm@1.0-service \
     android.hardware.drm@1.1-service.clearkey
 
-# DRM Shims
-PRODUCT_COPY_FILES += \
-    prebuilts/vndk/v27/arm/arch-arm-armv7-a-neon/shared/vndk-core/libprotobuf-cpp-lite.so:$(TARGET_COPY_OUT_VENDOR)/lib/libprotobuf-cpp-lite.so \
-    prebuilts/vndk/v27/arm64/arch-arm-armv7-a-neon/shared/vndk-core/libprotobuf-cpp-lite.so:$(TARGET_COPY_OUT_VENDOR)/lib64/libprotobuf-cpp-lite.so
-
 # Dalvik
 PRODUCT_PROPERTY_OVERRIDES += \
     dalvik.vm.heapstartsize=16m \
@@ -142,7 +135,7 @@ PRODUCT_PACKAGES += \
 
 # FMRadio
 #MTK_FM_SUPPORT := true
-	
+
 # Filesystem management tools
 PRODUCT_PACKAGES += \
     e2fsck \
@@ -203,10 +196,6 @@ PRODUCT_PACKAGES += \
     android.hardware.gatekeeper@1.0-impl \
     android.hardware.gatekeeper@1.0-service
 
-# HIDL Manifest
-PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/manifest.xml:system/vendor/manifest.xml
-
 # Init
 PRODUCT_PACKAGES += \
     fstab.mt8173 \
@@ -228,7 +217,6 @@ PRODUCT_PACKAGES += \
 
 # Light HAL
 PRODUCT_PACKAGES += \
-    lights.mt8173 \
     android.hardware.light@2.0-impl \
     android.hardware.light@2.0-service
 
@@ -247,8 +235,7 @@ PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/media/media_codecs_ffmpeg.xml:system/vendor/etc/media_codecs_ffmpeg.xml \
     $(LOCAL_PATH)/media/media_codecs_mediatek_audio.xml:system/vendor/etc/media_codecs_mediatek_audio.xml \
     $(LOCAL_PATH)/media/media_codecs_mediatek_video.xml:system/vendor/etc/media_codecs_mediatek_video.xml \
-    $(LOCAL_PATH)/media/media_codecs_performance.xml:system/vendor/etc/media_codecs_performance.xml \
-    $(LOCAL_PATH)/media/mtk_omx_core.cfg:system/vendor/etc/mtk_omx_core.cfg
+    $(LOCAL_PATH)/media/media_codecs_performance.xml:system/vendor/etc/media_codecs_performance.xml
 
 # OMX(SOFTWARE)
 PRODUCT_PROPERTY_OVERRIDES += \
@@ -348,9 +335,7 @@ PRODUCT_PACKAGES += \
     libinstalld_shim
 
 PRODUCT_PROPERTY_OVERRIDES += \
-    ro.ld.preload=libshim_ui.so \
-    vendor.debug.ld.preload=libmtk_symbols.so \
-    vendor.debug.ld.preload=libbase.so:libcutils.so:libutils.so
+    ro.ld.preload=libshim_ui.so
 
 # Tethering
 PRODUCT_PROPERTY_OVERRIDES += \

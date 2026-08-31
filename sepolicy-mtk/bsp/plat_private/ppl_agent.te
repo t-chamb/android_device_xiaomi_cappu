@@ -35,13 +35,6 @@ allow ppl_agent block_device:dir search;
 # Package name : ServiceManager
 allow ppl_agent ppl_agent_service:service_manager add;
 
-# Data : 2016/08/11
-# Operation : QC
-# Purpose : FileOp_BackupToBinRegionForDM() interface needs below policy for nand project
-# Package name : com.mediatek.ppl.ppl_agent
-allow ppl_agent mtd_device:dir search;
-allow ppl_agent mtd_device:chr_file { read write open };
-
 # Data : 2017/07/7
 # Purpose : [Privacy protection lock][ppl_agent need access fstab.mt6755 ppl on mt6755]
 # Package name : com.mediatek.ppl

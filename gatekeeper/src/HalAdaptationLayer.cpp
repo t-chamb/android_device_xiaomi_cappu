@@ -1,6 +1,7 @@
 #include "HalAdaptationLayer.h"
 #include "module.h"
 #include <memory>
+#include <utility>
 #include <gatekeeper/gatekeeper_messages.h>
 #include <cutils/log.h>
 
@@ -102,27 +103,30 @@ int HalAdaptationLayer::enroll(
         current_password_length = 0;
     }
 
-    // Setup buffers to be used by request/response
-
-    SizedBuffer current_password_handle_buff(current_password_handle_length);
+    // Setup buffers to be used by request/response.
+    // Android 12 SizedBuffer is move-only and takes ownership of a heap copy.
+    SizedBuffer current_password_handle_buff;
     if( NULL!=current_password_handle )
     {
-        memcpy(
-            current_password_handle_buff.buffer.get(),
-            current_password_handle,
-            current_password_handle_length);
+        uint8_t *copy = new uint8_t[current_password_handle_length];
+        memcpy(copy, current_password_handle, current_password_handle_length);
+        current_password_handle_buff = SizedBuffer(copy, current_password_handle_length);
     }
-    SizedBuffer desired_password_buff(desired_password_length);
-    memcpy(desired_password_buff.buffer.get(), desired_password, desired_password_length);
-    SizedBuffer current_password_buff(current_password_length);
+    uint8_t *desired_copy = new uint8_t[desired_password_length];
+    memcpy(desired_copy, desired_password, desired_password_length);
+    SizedBuffer desired_password_buff(desired_copy, desired_password_length);
+    SizedBuffer current_password_buff;
     if( NULL!=current_password )
-        memcpy(current_password_buff.buffer.get(), current_password, current_password_length);
-    SizedBuffer enrolled_password_handle_buff;
+    {
+        uint8_t *copy = new uint8_t[current_password_length];
+        memcpy(copy, current_password, current_password_length);
+        current_password_buff = SizedBuffer(copy, current_password_length);
+    }
 
     // Create request/response objects
-    EnrollRequest request(uid, &current_password_handle_buff, &desired_password_buff,
-        &current_password_buff);
-    EnrollResponse response(uid, &enrolled_password_handle_buff);
+    EnrollRequest request(uid, std::move(current_password_handle_buff),
+        std::move(desired_password_buff), std::move(current_password_buff));
+    EnrollResponse response;
 
     ALOGD("enter sProxy->Enroll\n");
     SoftProxy sProxy(dev);
@@ -137,18 +141,18 @@ int HalAdaptationLayer::enroll(
         return -(response.error);
     }
 
-    if( (0 == response.enrolled_password_handle.length) ||
-        (NULL == response.enrolled_password_handle.buffer.get()) )
+    const uint8_t *handle_data = response.enrolled_password_handle.Data<uint8_t>();
+    const uint32_t handle_size = response.enrolled_password_handle.size();
+    if( (0 == handle_size) || (NULL == handle_data) )
     {
         ALOGE("Wrong length of password handle in response");
         return -gatekeeper::ERROR_UNKNOWN;
     }
 
     // copy enrolled password handle
-    *enrolled_password_handle_length = response.enrolled_password_handle.length;
-    *enrolled_password_handle = new uint8_t[response.enrolled_password_handle.length];
-    memcpy(*enrolled_password_handle, response.enrolled_password_handle.buffer.get(),
-        response.enrolled_password_handle.length);
+    *enrolled_password_handle_length = handle_size;
+    *enrolled_password_handle = new uint8_t[handle_size];
+    memcpy(*enrolled_password_handle, handle_data, handle_size);
 
     return 0;
 }
@@ -174,17 +178,18 @@ int HalAdaptationLayer::verify(
         return -gatekeeper::ERROR_INVALID;
     }
 
-    // Setup buffers to be used by request/response
-    SizedBuffer enrolled_password_handle_buff(enrolled_password_handle_length);
-    memcpy(enrolled_password_handle_buff.buffer.get(),
-        enrolled_password_handle, enrolled_password_handle_length);
-    SizedBuffer provided_password_buff(provided_password_length);
-    memcpy(provided_password_buff.buffer.get(),provided_password,
-        provided_password_length);
+    // Setup buffers to be used by request/response.
+    // Android 12 SizedBuffer is move-only and takes ownership of a heap copy.
+    uint8_t *handle_copy = new uint8_t[enrolled_password_handle_length];
+    memcpy(handle_copy, enrolled_password_handle, enrolled_password_handle_length);
+    SizedBuffer enrolled_password_handle_buff(handle_copy, enrolled_password_handle_length);
+    uint8_t *password_copy = new uint8_t[provided_password_length];
+    memcpy(password_copy, provided_password, provided_password_length);
+    SizedBuffer provided_password_buff(password_copy, provided_password_length);
 
     // Create request/response objects
-    VerifyRequest request(
-        uid, challenge, &enrolled_password_handle_buff, &provided_password_buff);
+    VerifyRequest request(uid, challenge, std::move(enrolled_password_handle_buff),
+        std::move(provided_password_buff));
     VerifyResponse response;
 
     ALOGD("enter sProxy->Verify\n");
@@ -200,15 +205,16 @@ int HalAdaptationLayer::verify(
         return -(response.error);
     }
 
-    if ((0 == response.auth_token.length) ||
-        (NULL == response.auth_token.buffer.get()) )
+    const uint8_t *token_data = response.auth_token.Data<uint8_t>();
+    const uint32_t token_size = response.auth_token.size();
+    if ((0 == token_size) || (NULL == token_data) )
     {
         ALOGE("Wrong length of authentication token in response");
         return -gatekeeper::ERROR_UNKNOWN;
     }
-    *auth_token_length = response.auth_token.length;
-    *auth_token = new uint8_t[response.auth_token.length];
-    memcpy(*auth_token, response.auth_token.buffer.get(), response.auth_token.length);
+    *auth_token_length = token_size;
+    *auth_token = new uint8_t[token_size];
+    memcpy(*auth_token, token_data, token_size);
 
     if (request_reenroll != NULL)
     {

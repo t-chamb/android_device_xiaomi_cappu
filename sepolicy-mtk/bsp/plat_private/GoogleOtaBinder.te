@@ -34,9 +34,6 @@ binder_service(GoogleOtaBinder)
 allow GoogleOtaBinder block_device:dir search;
 #for kmsg
 allow GoogleOtaBinder kmsg_device:chr_file { write read open ioctl};
-#for nand
-allow GoogleOtaBinder mtd_device:dir search;
-allow GoogleOtaBinder mtd_device:chr_file { read write open rw_file_perms};
 #to get offset
 allow GoogleOtaBinder ota_package_file:dir search;
 allow GoogleOtaBinder ota_package_file:file { getattr open read write };

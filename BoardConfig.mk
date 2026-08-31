@@ -73,8 +73,13 @@ endif
 WITH_DEXPREOPT_BOOT_IMG_AND_SYSTEM_SERVER_ONLY := false
 
 # ELF
-BUILD_BROKEN_PREBUILT_ELF_FILES := true
-LOCAL_CHECK_ELF_FILES := false
+BUILD_BROKEN_ELF_PREBUILT_PRODUCT_COPY_FILES := true
+
+# The legacy RenderScript clang prebuilt (clang-3289846) links against
+# libncurses.so.5/libtinfo.so.5; the build host provides genuine ABI-5
+# builds of them via LD_LIBRARY_PATH, which ninja's env allowlist strips
+# unless listed here.
+BUILD_BROKEN_NINJA_USES_ENV_VARS := LD_LIBRARY_PATH
 
 # Hardware
 BOARD_HAS_MTK_HARDWARE := true
@@ -116,6 +121,7 @@ MTK_HWC_VERSION := 1.4.1
 TARGET_REQUIRES_SYNCHRONOUS_SETSURFACE := true
 
 # Kernel
+BOARD_BOOT_HEADER_VERSION := 0
 BOARD_KERNEL_CMDLINE := bootopt=64S3,32N2,64N2 androidboot.selinux=permissive androidboot.hardware=mt8173
 BOARD_KERNEL_PAGESIZE := 2048
 BOARD_NAME := 1479347649
@@ -130,6 +136,9 @@ TARGET_KERNEL_ARCH := arm64
 # Kernel Build
 TARGET_KERNEL_SOURCE := kernel/xiaomi/cappu
 TARGET_KERNEL_CONFIG := cappu_defconfig
+# This 3.18 VDSO link is driven through Clang but requires the matching GNU
+# binutils linker; do not let Clang search the host PATH for an unqualified ld.
+KERNEL_LD := LD=$(abspath prebuilts/gcc/linux-x86/aarch64/aarch64-linux-android-4.9/bin/aarch64-linux-android-ld.bfd)
 BOARD_KERNEL_IMAGE_NAME := Image.gz-dtb
 MTK_APPENDED_DTB_SUPPORT := yes
 
@@ -181,7 +190,11 @@ TARGET_NO_SENSOR_PERMISSION_CHECK := true
 
 # Recovery
 BOARD_HAS_NO_SELECT_BUTTON := true
+BOOTLOADER_MESSAGE_OFFSET := 4096
 TARGET_RECOVERY_FSTAB := $(LOCAL_PATH)/rootdir/etc/fstab.mt8173
+
+# VINTF
+DEVICE_MANIFEST_FILE := $(LOCAL_PATH)/manifest.xml
 
 # Include
 TARGET_SPECIFIC_HEADER_PATH += $(LOCAL_PATH)/include
@@ -202,11 +215,11 @@ BOARD_SEPOLICY_DIRS += \
         $(LOCAL_PATH)/sepolicy-mt8173/bsp \
         $(LOCAL_PATH)/sepolicy
 
-BOARD_PLAT_PUBLIC_SEPOLICY_DIR += \
+SYSTEM_EXT_PUBLIC_SEPOLICY_DIRS += \
         $(LOCAL_PATH)/sepolicy-mtk/basic/plat_public \
         $(LOCAL_PATH)/sepolicy-mtk/bsp/plat_public
 
-BOARD_PLAT_PRIVATE_SEPOLICY_DIR += \
+SYSTEM_EXT_PRIVATE_SEPOLICY_DIRS += \
         $(LOCAL_PATH)/sepolicy-mtk/basic/plat_private \
         $(LOCAL_PATH)/sepolicy-mtk/bsp/plat_private
 
@@ -246,8 +259,8 @@ WIFI_DRIVER_FW_PATH_P2P := "/system/etc/firmware/fw_bcmdhd.bin"
 # Zygote whitelist extra paths
 ZYGOTE_WHITELIST_PATH_EXTRA := "/dev/pvr_sync","/dev/pvrsrvkm"
 
-# Security patch level
-VENDOR_SECURITY_PATCH := 2026-04-04
+# Security patch level of the stock proprietary blob set
+VENDOR_SECURITY_PATCH := 2018-12-01
 
 # Inherit from the proprietary version
 -include vendor/xiaomi/cappu/BoardConfigVendor.mk
