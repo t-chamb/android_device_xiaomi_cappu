@@ -208,7 +208,7 @@ BOARD_OVERRIDE_RS_CPU_VARIANT_64 := cortex-a72
 
 # SELinux
 SELINUX_IGNORE_NEVERALLOWS := true
-BOARD_SEPOLICY_DIRS += \
+BOARD_VENDOR_SEPOLICY_DIRS += \
         $(LOCAL_PATH)/sepolicy-mtk/basic/non_plat \
         $(LOCAL_PATH)/sepolicy-mtk/bsp/non_plat \
         $(LOCAL_PATH)/sepolicy-mt8173/basic \

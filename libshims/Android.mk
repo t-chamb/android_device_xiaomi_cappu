@@ -20,7 +20,7 @@ include $(BUILD_SHARED_LIBRARY)
 include $(CLEAR_VARS)
 LOCAL_SRC_FILES := libshim_showlogo.cpp
 LOCAL_MODULE := libshim_showlogo
-LOCAL_SHARED_LIBRARIES := libgui
+LOCAL_SHARED_LIBRARIES := libgui libutils
 LOCAL_MODULE_TAGS := optional
 #LOCAL_VENDOR_MODULE := true
 include $(BUILD_SHARED_LIBRARY)
