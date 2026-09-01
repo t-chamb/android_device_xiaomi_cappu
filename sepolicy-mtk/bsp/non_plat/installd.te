@@ -56,7 +56,7 @@ allow installd platform_app:fd use;
 # Operation : Migration
 # Purpose : disable AT_SECURE for LD_PRELOAD
 userdebug_or_eng(`
-  allow installd dex2oat:process noatsecure;
+# [fwdport] removed (private platform dex2oat): allow installd dex2oat:process noatsecure;
 ')
 
 # Date : WK16.09

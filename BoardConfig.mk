@@ -209,19 +209,19 @@ BOARD_OVERRIDE_RS_CPU_VARIANT_64 := cortex-a72
 # SELinux
 SELINUX_IGNORE_NEVERALLOWS := true
 BOARD_VENDOR_SEPOLICY_DIRS += \
-        $(LOCAL_PATH)/sepolicy-mtk/basic/non_plat \
-        $(LOCAL_PATH)/sepolicy-mtk/bsp/non_plat \
-        $(LOCAL_PATH)/sepolicy-mt8173/basic \
-        $(LOCAL_PATH)/sepolicy-mt8173/bsp \
-        $(LOCAL_PATH)/sepolicy
+        device/xiaomi/cappu/sepolicy-mtk/basic/non_plat \
+        device/xiaomi/cappu/sepolicy-mtk/bsp/non_plat \
+        device/xiaomi/cappu/sepolicy-mt8173/basic \
+        device/xiaomi/cappu/sepolicy-mt8173/bsp \
+        device/xiaomi/cappu/sepolicy
 
 SYSTEM_EXT_PUBLIC_SEPOLICY_DIRS += \
-        $(LOCAL_PATH)/sepolicy-mtk/basic/plat_public \
-        $(LOCAL_PATH)/sepolicy-mtk/bsp/plat_public
+        device/xiaomi/cappu/sepolicy-mtk/basic/plat_public \
+        device/xiaomi/cappu/sepolicy-mtk/bsp/plat_public
 
 SYSTEM_EXT_PRIVATE_SEPOLICY_DIRS += \
-        $(LOCAL_PATH)/sepolicy-mtk/basic/plat_private \
-        $(LOCAL_PATH)/sepolicy-mtk/bsp/plat_private
+        device/xiaomi/cappu/sepolicy-mtk/basic/plat_private \
+        device/xiaomi/cappu/sepolicy-mtk/bsp/plat_private
 
 # Shim Libraries
 TARGET_LD_SHIM_LIBS := \

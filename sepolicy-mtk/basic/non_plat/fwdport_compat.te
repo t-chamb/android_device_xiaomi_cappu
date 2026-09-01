@@ -1,0 +1,13 @@
+# Types the 17.1 platform policy provided and Android 12 removed or made private, which
+# the MTK device policy still references. Declared with their old attributes.
+# dex2oat and dex2oat_exec are still private platform types, so the rules that named
+# them were removed instead.
+type mtd_device, dev_type;
+type pvr_device, dev_type;
+type alarm_device, dev_type;
+type netd_socket, file_type;
+type qtaguid_proc, fs_type;
+type system_radio_prop, property_type;
+type mediacodec_service, service_manager_type;
+type untrusted_v2_app, domain;
+type install_recovery, domain;
