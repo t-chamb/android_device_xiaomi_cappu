@@ -97,6 +97,16 @@ on post-fs-data
     chown system system /persist
     chmod 0771 /persist
 
+    # The sensor HAL blob (Bosch "sensord") writes a debug line for every 200 Hz
+    # accelerometer sample to these two files whenever a sensor is active
+    # (~35 KB/s, ~125 MB per screen-on hour). Keep its calibration profiles in
+    # the directory but send the logs nowhere.
+    mkdir /data/misc/sensord_stor 0770 system system
+    rm /data/misc/sensord_stor/sensord.log
+    rm /data/misc/sensord_stor/data_in.log
+    symlink /dev/null /data/misc/sensord_stor/sensord.log
+    symlink /dev/null /data/misc/sensord_stor/data_in.log
+
     # create basic filesystem structure
     # mkdir /data/nvram 2770 root system
     # We chown/chmod /nvdata again so because mount is run as root + defaults
