@@ -17,6 +17,10 @@ $(call inherit-product, device/xiaomi/cappu/device.mk)
 # Inherit some common Lineage stuff.
 $(call inherit-product, vendor/lineage/config/common_full_tablet_wifionly.mk)
 
+# Google apps (MindTheGapps for Android 12.1: Play Store, Play services, Google
+# setup), built in when the tree is checked out at vendor/gapps.
+$(call inherit-product-if-exists, vendor/gapps/arm64/arm64-vendor.mk)
+
 # Device identifier
 PRODUCT_BRAND := Xiaomi
 PRODUCT_DEVICE := cappu
