@@ -57,7 +57,7 @@ TARGET_BOOTANIMATION_HALF_RES := true
 TARGET_BOOTANIMATION_MULTITHREAD_DECODE := true
 
 # Camera
-USE_CAMERA_STUB := true
+USE_CAMERA_STUB := false
 
 # dexpre-opt
 ifeq ($(HOST_OS),linux)
@@ -140,6 +140,10 @@ TARGET_KERNEL_CONFIG := cappu_defconfig
 # binutils linker; do not let Clang search the host PATH for an unqualified ld.
 KERNEL_LD := LD=$(abspath prebuilts/gcc/linux-x86/aarch64/aarch64-linux-android-4.9/bin/aarch64-linux-android-ld.bfd)
 BOARD_KERNEL_IMAGE_NAME := Image.gz-dtb
+# The clang-12 build of this 3.18 kernel does not boot. Ship the GCC 4.9 build of the
+# pre-port source (kernel commit a3149ff2c); see prebuilt/README.md.
+TARGET_FORCE_PREBUILT_KERNEL := true
+TARGET_PREBUILT_KERNEL := device/xiaomi/cappu/prebuilt/Image.gz-dtb
 MTK_APPENDED_DTB_SUPPORT := yes
 
 # FS
@@ -233,24 +237,40 @@ TARGET_LD_SHIM_LIBS := \
 	/system/vendor/lib64/libui_ext.so|libshim_showlogo.so \
 	/system/vendor/lib/libui_ext.so|libmtk_symbols.so \
 	/system/vendor/lib64/libui_ext.so|libmtk_symbols.so \
+	/system/vendor/lib/libgui_ext.so|libshim_ui.so \
+	/system/vendor/lib/libgui_ext.so|libmtk_symbols.so \
+	/system/vendor/lib64/libgui_ext.so|libshim_ui.so \
+	/system/vendor/lib64/libgui_ext.so|libmtk_symbols.so \
+	/system/vendor/lib/hw/hwcomposer.mt8173.so|libshim_ui.so \
+	/system/vendor/lib/hw/hwcomposer.mt8173.so|libmtk_symbols.so \
+	/system/vendor/lib64/hw/hwcomposer.mt8173.so|libshim_ui.so \
+	/system/vendor/lib64/hw/hwcomposer.mt8173.so|libmtk_symbols.so \
+	/system/vendor/lib/hw/gralloc.mt8173.img.so|libshim_cappu_gralloc.so \
+	/system/vendor/lib64/hw/gralloc.mt8173.img.so|libshim_cappu_gralloc.so \
+	/system/vendor/lib/hw/audio.primary.mt8173.so|libshim_cappu_audio.so \
+	/system/vendor/lib64/hw/audio.primary.mt8173.so|libshim_cappu_audio.so \
+	/system/vendor/lib/libMtkOmxVenc.so|libshim_ui.so \
+	/system/vendor/lib/libMtkOmxVdecEx.so|libshim_cappu_omx.so \
+	/system/vendor/lib/libMtkOmxVdecEx.so|libshim_ui.so \
+	/system/vendor/lib64/libcam_utils.so|libshim_ui.so \
+	/system/vendor/lib64/libcam_utils.so|libshim_cappu_camera.so \
+	/system/vendor/lib64/libmtk_mmutils.so|libshim_ui.so \
+	/system/vendor/lib64/libcam.camnode.so|libshim_ui.so \
+	/system/vendor/lib64/libcam.client.so|libshim_ui.so \
+	/system/vendor/lib64/libcam.utils.sensorlistener.so|libshim_cappu_camera.so \
+	/system/vendor/lib64/libcam.paramsmgr.so|libshim_cappu_camera.so \
+	/system/vendor/lib64/libcam.camadapter.so|libshim_cappu_camera.so \
 
 # ThermalHAL
 TARGET_THERMALHAL_VARIANT := mt8173
 
-# Wifi
-BOARD_WLAN_DEVICE := MediaTek
+# Wifi: the tablet has a Broadcom BCM4356 (bcmdhd, built into the kernel), not a MediaTek combo chip
+BOARD_WLAN_DEVICE := bcmdhd
 WPA_SUPPLICANT_VERSION := VER_0_8_X
 BOARD_HOSTAPD_DRIVER := NL80211
-BOARD_HOSTAPD_PRIVATE_LIB := lib_driver_cmd_mt66xx
+BOARD_HOSTAPD_PRIVATE_LIB := lib_driver_cmd_bcmdhd
 BOARD_WPA_SUPPLICANT_DRIVER := NL80211
-BOARD_WPA_SUPPLICANT_PRIVATE_LIB := lib_driver_cmd_mt66xx
-WIFI_DRIVER_FW_PATH_PARAM := "/dev/wmtWifi"
-WIFI_DRIVER_FW_PATH_STA := STA
-WIFI_DRIVER_FW_PATH_AP := AP
-WIFI_DRIVER_FW_PATH_P2P := P2P
-WIFI_DRIVER_STATE_CTRL_PARAM	 := "/dev/wmtWifi"
-WIFI_DRIVER_STATE_ON		 := 1
-WIFI_DRIVER_STATE_OFF		 := 0
+BOARD_WPA_SUPPLICANT_PRIVATE_LIB := lib_driver_cmd_bcmdhd
 WIFI_DRIVER_FW_PATH_PARAM := "/sys/module/bcmdhd/parameters/firmware_path"
 WIFI_DRIVER_FW_PATH_STA := "/system/etc/firmware/fw_bcmdhd.bin"
 WIFI_DRIVER_FW_PATH_AP := "/system/etc/firmware/fw_bcmdhd_apsta.bin"
@@ -264,3 +284,6 @@ VENDOR_SECURITY_PATCH := 2018-12-01
 
 # Inherit from the proprietary version
 -include vendor/xiaomi/cappu/BoardConfigVendor.mk
+
+# Mount points for the MTK partitions listed in fstab.mt8173
+BOARD_ROOT_EXTRA_FOLDERS += protect_f protect_s nvdata cust persist

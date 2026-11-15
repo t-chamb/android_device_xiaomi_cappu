@@ -80,7 +80,23 @@ include $(BUILD_PREBUILT)
 
 include $(CLEAR_VARS)
 LOCAL_MODULE       := ueventd.mt8173.rc
+LOCAL_MODULE_STEM  := ueventd.rc
 LOCAL_MODULE_CLASS := ETC
 LOCAL_SRC_FILES    := etc/ueventd.mt8173.rc
-LOCAL_MODULE_PATH  := $(TARGET_ROOT_OUT)
+# Android 12 only reads /vendor/etc/ueventd.rc unless ro.product.first_api_level is set
+LOCAL_MODULE_PATH  := $(TARGET_OUT_VENDOR_ETC)
+include $(BUILD_PREBUILT)
+
+include $(CLEAR_VARS)
+LOCAL_MODULE       := init.cappu.btaddr.sh
+LOCAL_MODULE_CLASS := EXECUTABLES
+LOCAL_SRC_FILES    := bin/init.cappu.btaddr.sh
+LOCAL_MODULE_PATH  := $(TARGET_OUT_VENDOR_EXECUTABLES)
+include $(BUILD_PREBUILT)
+
+include $(CLEAR_VARS)
+LOCAL_MODULE       := cappu.camera.provider.rc
+LOCAL_MODULE_CLASS := ETC
+LOCAL_SRC_FILES    := etc/cappu.camera.provider.rc
+LOCAL_MODULE_PATH  := $(TARGET_OUT_VENDOR_ETC)/init
 include $(BUILD_PREBUILT)

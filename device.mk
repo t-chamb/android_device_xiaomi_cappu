@@ -33,11 +33,9 @@ PRODUCT_COPY_FILES += \
 
 # Audio HAL
 PRODUCT_PACKAGES += \
-	android.hardware.audio@2.0 \
-	android.hardware.audio@2.0-impl \
-    android.hardware.audio.effect@2.0-impl \
-    android.hardware.soundtrigger@2.0-impl \
-    android.hardware.soundtrigger@2.0-core \
+    android.hardware.audio.service \
+    android.hardware.audio@6.0-impl \
+    android.hardware.audio.effect@6.0-impl \
     audio.a2dp.default \
     audio.usb.default \
     audio.r_submix.default \
@@ -77,12 +75,14 @@ PRODUCT_COPY_FILES += \
     frameworks/av/services/audiopolicy/enginedefault/config/example/phone/audio_policy_engine_stream_volumes.xml:system/vendor/etc/audio_policy_engine_stream_volumes.xml
 
 
-# Camera HAL
-#PRODUCT_PACKAGES += \
-#    camera.device@1.0-impl \
-#    camera.device@3.2-impl \
-#    android.hardware.camera.provider@2.4-impl \
-#    android.hardware.camera.provider@2.4-service
+# Camera HAL: the stock Android 7 MediaTek HAL, run in its HAL3 mode
+# (debug.camera.force_device=3) behind the 64-bit legacy provider.
+PRODUCT_PACKAGES += \
+    android.hardware.camera.provider@2.4-impl \
+    android.hardware.camera.provider@2.4-service_64 \
+    cappu.camera.provider.rc \
+    libshim_cappu_camera \
+    libskia_cappu_stub
 
 # Bluetooth
 PRODUCT_COPY_FILES += \
@@ -149,14 +149,6 @@ PRODUCT_PACKAGES += \
     mkfs.ntfs \
     mount.ntfs
 
-# GNSS HAL
-PRODUCT_PACKAGES += \
-    android.hardware.gnss@1.0-impl
-
-# GPS force mode
-PRODUCT_PROPERTY_OVERRIDES += \
-    persist.force.gps.mode=gnss
-
 # Graphics
 PRODUCT_AAPT_CONFIG += xlarge large
 TARGET_SCREEN_HEIGHT := 2048
@@ -166,7 +158,7 @@ TARGET_TEGRA_VERSION := mt8173
 PRODUCT_PACKAGES += \
     android.hardware.graphics.allocator@2.0-impl \
     android.hardware.graphics.allocator@2.0-service \
-    android.hardware.graphics.composer@2.1-impl \
+    android.hardware.graphics.composer@2.1-service \
     android.hardware.graphics.mapper@2.0-impl
 
 # EGL Shims
@@ -204,6 +196,10 @@ PRODUCT_PACKAGES += \
     init.modem.rc \
     init.mt8173.rc \
     init.mt8173.usb.rc \
+    init.cappu.btaddr.sh \
+    libshim_cappu_audio \
+    libshim_cappu_gralloc \
+    libshim_cappu_omx \
     init.project.rc \
     init.protect.rc \
     init.recovery.mt8173.rc \
@@ -271,6 +267,7 @@ PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/android.hardware.vulkan.version-1_0_3.xml:system/etc/permissions/android.hardware.vulkan.version.xml \
     frameworks/native/data/etc/android.software.sip.voip.xml:system/etc/permissions/android.software.sip.voip.xml \
     frameworks/native/data/etc/handheld_core_hardware.xml:system/etc/permissions/handheld_core_hardware.xml \
+    frameworks/native/data/etc/android.hardware.camera.front.xml:system/etc/permissions/android.hardware.camera.front.xml \
     frameworks/native/data/etc/android.hardware.camera.autofocus.xml:system/etc/permissions/android.hardware.camera.autofocus.xml \
     frameworks/native/data/etc/android.hardware.camera.manual_sensor.xml:system/etc/permissions/android.hardware.camera.manual_sensor.xml \
     frameworks/native/data/etc/android.hardware.wifi.xml:system/etc/permissions/android.hardware.wifi.xml \
@@ -288,8 +285,6 @@ PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/android.hardware.audio.low_latency.xml:system/etc/permissions/android.hardware.audio.low_latency.xml \
     frameworks/native/data/etc/android.hardware.bluetooth.xml:system/etc/permissions/android.hardware.bluetooth.xml \
     frameworks/native/data/etc/android.hardware.bluetooth_le.xml:system/etc/permissions/android.hardware.bluetooth_le.xml \
-    frameworks/native/data/etc/android.hardware.telephony.cdma.xml:system/etc/permissions/android.hardware.telephony.cdma.xml \
-    frameworks/native/data/etc/android.hardware.telephony.gsm.xml:system/etc/permissions/android.hardware.telephony.gsm.xml \
     frameworks/native/data/etc/android.hardware.usb.host.xml:system/etc/permissions/android.hardware.usb.host.xml \
     frameworks/native/data/etc/android.hardware.wifi.xml:system/etc/permissions/android.hardware.wifi.xml \
     frameworks/native/data/etc/android.hardware.wifi.direct.xml:system/etc/permissions/android.hardware.wifi.direct.xml \
@@ -318,13 +313,14 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
     libsensorndkbridge \
     android.hardware.sensors@1.0-impl \
+    android.hardware.sensors@1.0-service \
 
 PRODUCT_PROPERTY_OVERRIDES += \
     ro.hardware.sensors=none
 
 # SECCOMP Configuration
 PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/seccomp/mediacodec-seccomp.policy:system/vendor/etc/seccomp_policy/mediacodec-seccomp.policy
+    $(LOCAL_PATH)/seccomp/mediacodec-seccomp.policy:system/vendor/etc/seccomp_policy/mediacodec.policy
 
 # Shim Libraries
 PRODUCT_PACKAGES += \
@@ -396,3 +392,9 @@ PRODUCT_PACKAGES += \
 
 $(call inherit-product-if-exists, vendor/xiaomi/cappu/cappu-vendor.mk)
 
+
+# Precompile system apps fully at build time. The default ("verify") leaves app code to the
+# interpreter/JIT, which is very noticeable on this 2017 SoC.
+PRODUCT_DEX_PREOPT_DEFAULT_COMPILER_FILTER := speed
+# Do not force a filter for system_server: APEX system-server jars would then be compiled into
+# /data/dalvik-cache, which system_server refuses to execute (no fs-verity on this kernel).

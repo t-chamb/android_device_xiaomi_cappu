@@ -84,7 +84,9 @@ persist.radio.mtk_ps3_rat=G
 persist.log.tag.RILMUXD=I
 persist.log.tag.DCT=D
 mtk.vdec.waitkeyframeforplay=1
-ro.sys.sdcardfs=1
+# The 3.18 sdcardfs hangs the kernel under Android 12 vold; use FUSE only.
+ro.sys.sdcardfs=0
+external_storage.sdcardfs.enabled=0
 debug.sf.disable_backpressure=1
 debug.sf.latch_unsignaled=1
 ro.ksc5601_write=0
@@ -99,3 +101,30 @@ debug.sf.enable_hwc_vds=1
 ro.control_privapp_permissions=log
 ro.mtk_config_max_dram_size=0x100000000
 ro.mtk_f2fs_enable=0
+
+# BCM4356 power-up plus firmware patch download takes 3-6 s; the stack default is 2.9 s
+bluetooth.enable_timeout_ms=12000
+
+# Old SoC with slow HAL bring-up (Bluetooth chip patching alone takes seconds)
+ro.hw_timeout_multiplier=2
+
+# Wi-Fi only tablet: no modem, no RIL (matches stock)
+ro.radio.noril=true
+
+# PowerVR DDK 1.7 skews GL uploads into EGLImage-backed textures; upload hardware bitmaps on the CPU
+debug.hwui.cpu_bitmap_upload=true
+
+# audio.primary.mt8173.so is an Android 7 blob: its HAL structs lack every entry added since
+ro.vendor.audio.pre_oreo_hal=true
+
+# Camera: stock HAL in HAL3 mode; it needs framework binder services (sensorservice, NvRAM)
+debug.camera.force_device=3
+ro.vendor.camera.provider24.framework_binder=true
+# Codec blobs reach the MediaTek "PQ" daemon over the framework binder
+ro.vendor.media.omx.framework_binder=true
+
+# The PowerVR DDK 1.7 EGL tags every window buffer HAL_DATASPACE_SRGB_LINEAR (a legacy
+# value Android 7 ignored). With colour management on, SurfaceFlinger treats the pixels as
+# linear light and applies the sRGB curve again on every GPU-composited frame (washed-out
+# colours). The panel is plain sRGB, so colour management has nothing to do here anyway.
+ro.surface_flinger.use_color_management=false

@@ -1,3 +1,6 @@
+#include <new>
+
+#include <ui/GraphicBuffer.h>
 #include <ui/GraphicBufferMapper.h>
 #include <ui/Rect.h>
 #include <string>
@@ -37,38 +40,19 @@ extern "C" {
             ycbcr);
     }
 
-    __attribute__((weak))
-    void _ZN7android19GraphicBufferMapper9lockYCbCrEPK13native_handlejRKNS_4RectEP13android_ycbcr(
-        buffer_handle_t handle,
-        uint32_t usage,
-        const android::Rect& bounds,
-        android_ycbcr* ycbcr) {
-        android::GraphicBufferMapper::get().lockYCbCr(handle, usage, bounds, ycbcr);
-    }
+    // lockYCbCr(handle, uint32_t usage, ...) still exists in libui with the same
+    // signature; defining it here would make the shim call itself forever.
 
-    __attribute__((weak))
-    void _ZN7android13GraphicBufferC1EjjijNSt3__112basic_stringIcNS1_11char_traitsIcEENS1_9allocatorIcEEEE(
-        void* pthis,
-        uint32_t inWidth,
-        uint32_t inHeight,
-        int inFormat,
-        uint32_t inUsage,
-        std::string requestorName) {
-        (void)pthis;
-        (void)inWidth;
-        (void)inHeight;
-        (void)inFormat;
-        (void)inUsage;
-        (void)requestorName;
-    }
-
+    // GraphicBuffer(w, h, format, usage): the requestor-name argument was added later.
+    // The caller allocated the object, so construct the current class in place.
+    // (64-bit blobs are patched to allocate the current object size, see
+    // vendor/xiaomi/cappu/patch-graphicbuffer-size.py.)
     void _ZN7android13GraphicBufferC1Ejjij(
         void* pthis,
         uint32_t inWidth,
         uint32_t inHeight,
         int inFormat,
         uint32_t inUsage) {
-        _ZN7android13GraphicBufferC1EjjijNSt3__112basic_stringIcNS1_11char_traitsIcEENS1_9allocatorIcEEEE(
-            pthis, inWidth, inHeight, inFormat, inUsage, "<Unknown>");
+        new (pthis) android::GraphicBuffer(inWidth, inHeight, inFormat, inUsage, "<mtk-blob>");
     }
 }

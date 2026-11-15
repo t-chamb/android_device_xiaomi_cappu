@@ -3,3 +3,12 @@
 sched_getscheduler: 1
 sched_setaffinity: 1
 sched_getparam: 1
+# libvcodecdrv queries physical memory (get_phys_pages -> sysinfo) when a codec starts
+sysinfo: 1
+# The IMG gralloc "subchannel" thread select()s (pselect6 on current bionic);
+# libshim_cappu_gralloc wraps tee() and sleeps
+pselect6: 1
+_newselect: 1
+tee: 1
+nanosleep: 1
+clock_nanosleep: 1

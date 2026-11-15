@@ -1,9 +1,12 @@
-on fs
-	# set charging free due to it waits for USB activation
-	write /sys/class/android_usb/android0/enable 1
-	start adbd
+on init
+	# This kernel exposes the eMMC as soc/11230000.mmc; keep the stock by-name path working.
+	mkdir /dev/block 0755 root root
+	mkdir /dev/block/platform 0755 root root
+	mkdir /dev/block/platform/mtk-msdc.0 0755 root root
+	symlink /dev/block/platform/soc/11230000.mmc /dev/block/platform/mtk-msdc.0/11230000.MSDC0
 
-	# distinguish USB shoulde connect or not, i.e. CDP vs SDP
+on fs
+	# distinguish USB should connect or not, i.e. CDP vs SDP
 	write /sys/devices/platform/mt_usb/cmode 2
 
 on property:ro.debuggable=1

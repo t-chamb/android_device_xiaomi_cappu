@@ -183,4 +183,26 @@
     <bool name="config_nightDisplayAvailable">true</bool>
 
     <bool name="config_supportDoubleTapWake">true</bool>
+
+    <!-- The Mi Pad 3 is Wi-Fi only (stock sets ro.radio.noril=true). -->
+    <bool name="config_voice_capable">false</bool>
+    <bool name="config_sms_capable">false</bool>
+    <bool name="config_mobile_data_capable">false</bool>
+
+    <!-- Backlight-to-nits mapping. Without one, DisplayDeviceConfig logs a WTF (and writes a
+         dropbox entry) every time brightness is sampled. Values are approximate for this panel. -->
+    <integer-array name="config_screenBrightnessBacklight">
+        <item>1</item>
+        <item>64</item>
+        <item>128</item>
+        <item>192</item>
+        <item>255</item>
+    </integer-array>
+    <array name="config_screenBrightnessNits">
+        <item>2.0</item>
+        <item>90.0</item>
+        <item>190.0</item>
+        <item>295.0</item>
+        <item>400.0</item>
+    </array>
 </resources>

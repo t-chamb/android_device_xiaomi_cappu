@@ -194,7 +194,9 @@ persist.log.tag.RIL-DATA=D
 ro.boot.opt_using_default=1
 ro.mtk_multiwindow=1
 mtk.vdec.waitkeyframeforplay=1
-ro.sys.sdcardfs=1
+# The 3.18 sdcardfs hangs the kernel under Android 12 vold; use FUSE only.
+ro.sys.sdcardfs=0
+external_storage.sdcardfs.enabled=0
 ro.media.maxmem=500000000
 persist.sys.aal.function=4
 ro.malloc.impl=jemalloc

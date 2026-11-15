@@ -1,0 +1,13 @@
+# Parsed after android.hardware.camera.provider@2.4-service_64.rc (file names sort).
+# The stock MediaTek HAL used to live inside cameraserver and needs the same
+# supplementary groups it had there: "system" for the NVRAM calibration files
+# under /nvdata, "media" for the MDP/codec nodes.
+service vendor.camera-provider-2-4 /vendor/bin/hw/android.hardware.camera.provider@2.4-service_64
+    override
+    interface android.hardware.camera.provider@2.4::ICameraProvider legacy/0
+    class hal
+    user cameraserver
+    group audio camera input drmrpc inet media mediadrm sdcard_rw system
+    ioprio rt 4
+    capabilities SYS_NICE
+    task_profiles CameraServiceCapacity MaxPerformance

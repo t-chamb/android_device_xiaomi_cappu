@@ -14,3 +14,10 @@
 /data/fcc.dat u:object_r:battery_data_file:s0
 /data/ocv_flag.dat u:object_r:battery_data_file:s0
 
+
+# Mount points for the MTK partitions mounted from fstab.mt8173 (stock blobs expect them at /)
+/nvdata(/.*)?       u:object_r:nvdata_file:s0
+/protect_f(/.*)?    u:object_r:protect_f_data_file:s0
+/protect_s(/.*)?    u:object_r:protect_s_data_file:s0
+/persist(/.*)?      u:object_r:persist_data_file:s0
+/cust(/.*)?         u:object_r:rootfs:s0

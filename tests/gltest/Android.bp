@@ -1,0 +1,9 @@
+// Bring-up diagnostic: does the GPU driver gamma-encode what GL writes to a window surface?
+cc_test {
+    name: "cappu-gl-srgb-test",
+    srcs: ["gl_srgb_test.cpp"],
+    gtest: false,
+    shared_libs: ["libcutils", "libEGL", "libGLESv2", "libui", "libgui", "libutils"],
+    static_libs: ["libglTest"],
+    cflags: ["-DGL_GLEXT_PROTOTYPES", "-DEGL_EGLEXT_PROTOTYPES", "-Wall", "-Werror"],
+}

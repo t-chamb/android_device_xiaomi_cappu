@@ -31,3 +31,10 @@ PRODUCT_GMS_CLIENTID_BASE := android-xiaomi
 #    PRIVATE_BUILD_DESC="lineage_cappu-userdebug-8.1.0-OPM7.181205.001-9fec313e91-test-keys"
 
 #BUILD_FINGERPRINT := Xiaomi/lineage_cappu/cappu:8.1.0/OPM7.181205.001/9fec313e91:userdebug/test-keys
+
+# Use the stock firmware's fingerprint for every partition. Besides being the usual LineageOS
+# practice, it keeps system/vendor/boot fingerprints identical across incremental builds;
+# when they drift Android shows "There's an internal problem with your device" at boot.
+BUILD_FINGERPRINT := Xiaomi/cappu/cappu:7.0/NRD90M/9.1.24:user/release-keys
+PRODUCT_BUILD_PROP_OVERRIDES += \
+    PRIVATE_BUILD_DESC="cappu-user 7.0 NRD90M 9.1.24 release-keys"
