@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- The tablet has capacitive recents/home/back keys below the screen, so the
+         taskbar's on-screen navigation buttons are off by default.
+         (Settings > System > Buttons > Enable taskbar turns it back on.) -->
+    <integer name="def_enable_taskbar">0</integer>
+</resources>
