@@ -71,3 +71,10 @@ LOCAL_MODULE := libshim_cappu_omx
 LOCAL_MODULE_TAGS := optional
 LOCAL_VENDOR_MODULE := true
 include $(BUILD_SHARED_LIBRARY)
+
+include $(CLEAR_VARS)
+LOCAL_SRC_FILES := pvr_mutex.c
+LOCAL_MODULE := libshim_cappu_pvr
+LOCAL_MODULE_TAGS := optional
+LOCAL_VENDOR_MODULE := true
+include $(BUILD_SHARED_LIBRARY)

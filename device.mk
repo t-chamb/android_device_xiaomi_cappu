@@ -200,6 +200,7 @@ PRODUCT_PACKAGES += \
     libshim_cappu_audio \
     libshim_cappu_gralloc \
     libshim_cappu_omx \
+    libshim_cappu_pvr \
     init.project.rc \
     init.protect.rc \
     init.recovery.mt8173.rc \
