@@ -6,16 +6,20 @@ Android build never boots on this board.
 
 How it was produced:
 
-- source: `kernel/xiaomi/cappu` at commit `a3149ff2c` (the tree before the
-  LineageOS 19.1 port changes)
-- compiler: GCC 4.9 (`aarch64-linux-android-4.9`), `cappu_defconfig`
-- defconfig changes on top of that commit: `cappu_defconfig.diff`
+- source: branch `cappu-lineage-19.1-gcc` of
+  https://github.com/t-chamb/android_kernel_xiaomi_cappu, which is commit
+  `a3149ff2c` (the tree before the clang build changes) plus the defconfig
+  changes and the four fixes below, one commit each
+- compiler: GCC 4.9 from the LineageOS 19.1 prebuilts
+  (`aarch64-linux-android-4.9`, `arm-linux-androideabi-4.9`):
+  `make O=out ARCH=arm64 CROSS_COMPILE=aarch64-linux-android- CROSS_COMPILE_ARM32=arm-linux-androidkernel- cappu_defconfig Image.gz-dtb`
+- defconfig changes on top of `a3149ff2c`: `cappu_defconfig.diff`
   - `RT_GROUP_SCHED` off: with it, real-time timers of unprivileged groups
     are blocked (Bluetooth aborted)
   - `CPUSETS` off: MediaTek hotplug keeps only CPU0 online at boot and the
     3.18 cpuset code never re-adds cores, pinning every app to CPU0
   - `SDCARD_FS` off: sdcardfs oopses in `show_vfsmnt` shortly after boot
-- source patches on top of that commit (apply with `patch -p1`):
+- source fixes on top of `a3149ff2c`, also kept here as patches (`patch -p1`):
   - `0001-random-do-not-block-dev-random-once-seeded.patch`: `/dev/random`
     and `getrandom(GRND_RANDOM)` read from the non-blocking pool once it is
     seeded, as mainline does since 5.6. The board has no hardware RNG and an
