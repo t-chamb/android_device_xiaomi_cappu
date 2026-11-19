@@ -1,0 +1,55 @@
+# Services of the Android 7 vendor image that had no domain of their own and ran as init.
+
+# MediaTek picture-quality daemon: registers the "PQ" binder service that the stock codec,
+# camera and composer blobs look up.
+type pq_daemon, domain;
+type pq_daemon_exec, exec_type, vendor_file_type, file_type;
+init_daemon_domain(pq_daemon)
+type pq_service, service_manager_type;
+binder_use(pq_daemon)
+add_service(pq_daemon, pq_service)
+allow { mediacodec hal_camera_default hal_graphics_composer_default surfaceflinger } pq_service:service_manager find;
+binder_call({ mediacodec hal_camera_default hal_graphics_composer_default surfaceflinger }, pq_daemon)
+binder_call(pq_daemon, { mediacodec hal_camera_default hal_graphics_composer_default surfaceflinger })
+allow pq_daemon graphics_device:chr_file rw_file_perms;
+
+# On this kernel the binder driver does not hand over the caller's security context, so the
+# service managers and keystore read it from /proc/<pid>/attr/current (see the
+# IPCThreadState::getCallingSid fallback in frameworks/native).
+allow { servicemanager hwservicemanager vndservicemanager keystore } domain:dir search;
+allow { servicemanager hwservicemanager vndservicemanager keystore } domain:file { open read };
+allow { servicemanager hwservicemanager vndservicemanager keystore } domain:process getattr;
+
+# The stock composer registers "GuiExtService" with the vendor service manager and looks up
+# "PQ" there.
+type cappu_gfx_vndservice, vndservice_manager_type;
+allow hal_graphics_composer_default cappu_gfx_vndservice:service_manager { add find };
+
+# Publishes the factory Bluetooth address from NVRAM (init.cappu.btaddr.sh).
+type cappu_btaddr, domain;
+type cappu_btaddr_exec, exec_type, vendor_file_type, file_type;
+init_daemon_domain(cappu_btaddr)
+allow cappu_btaddr vendor_shell_exec:file rx_file_perms;
+allow cappu_btaddr vendor_toolbox_exec:file rx_file_perms;
+allow cappu_btaddr nvdata_file:dir search;
+allow cappu_btaddr nvdata_file:file r_file_perms;
+set_prop(cappu_btaddr, bluetooth_prop)
+
+# init itself: ownership of a few sysfs/proc nodes set from init.mt8173.rc, the bind mount of
+# the software codec linker config, and a mount point created by the vendor init script.
+allow init sysfs:file setattr;
+allow init proc:file setattr;
+allow init system_file:file mounton;
+allow vendor_init tmpfs:dir { add_name create };
+
+# vendor/build.prop and init.mt8173.rc carry the stock image's properties, many of which are
+# typed as platform properties on Android 12; init applies them with vendor_init's rights and
+# drops the ones it may not set (media.settings.xml was one: the camera then found no video
+# profiles).
+allow vendor_init { default_prop system_prop radio_prop bluetooth_prop bt_prop wmt_prop usp_prop mediatek_prop }:property_service set;
+# Directories the vendor init script walks through to create its own.
+allow vendor_init { system_data_file wifi_data_file apk_data_file drm_data_file dhcp_data_file cache_file }:dir search;
+allow logpersist cache_file:dir search;
+
+# cameraserver reads vendor properties of the stock camera stack through the legacy libraries.
+get_prop(cameraserver, vendor_default_prop)

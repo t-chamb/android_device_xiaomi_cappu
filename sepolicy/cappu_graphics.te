@@ -1,0 +1,17 @@
+# PowerVR DDK 1.7 / MediaTek GED user space, loaded into every process that draws:
+#  - libged ioctls on /proc/ged (frame statistics for GPU DVFS),
+#  - the IMG gralloc "subchannel" pipe handed out by the allocator HAL,
+#  - /proc/m4u and /proc/mtk_cmdq for the media HALs.
+allow { appdomain system_server surfaceflinger bootanim mediacodec hal_camera_default hal_graphics_composer_default hal_graphics_allocator_default } proc_ged:file { rw_file_perms ioctl };
+allow { appdomain system_server surfaceflinger bootanim mediacodec hal_camera_default hal_graphics_composer_default } hal_graphics_allocator_default:fifo_file { read write getattr };
+# The DDK looks for its debugfs statistics directories and carries on without them.
+dontaudit { domain -init -vendor_init } { debugfs_gpu_img debugfs_ion }:dir search;
+# libprocessgroup tries to create per-UID directories under /sys/fs/cgroup, which is not a
+# cgroup mount on this kernel.
+dontaudit { init zygote system_server } sysfs:dir create;
+
+# ioctl command ranges of those nodes ('g' for GED and M4U, 'x' for CMDQ), and the RPMB
+# commands of the TEE daemon.
+allowxperm { appdomain system_server surfaceflinger bootanim mediacodec hal_camera_default hal_graphics_composer_default hal_graphics_allocator_default } proc_ged:file ioctl { 0x6700-0x67ff };
+allowxperm { mediacodec hal_camera_default hal_graphics_composer_default } proc:file ioctl { 0x6700-0x67ff 0x7800-0x78ff };
+allowxperm tee rpmb_block_device:blk_file ioctl { 0xb300-0xb3ff };

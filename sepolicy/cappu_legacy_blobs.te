@@ -1,0 +1,156 @@
+# Access the Android 7 vendor blobs need, taken from the audit log of boots that exercised
+# boot, camera, video, radios and sleep. Grouped by domain.
+
+# audioserver
+allow audioserver vendor_default_prop:file { getattr open read };
+
+# fsck
+allow fsck block_device:blk_file { ioctl open read write };
+
+# gmscore_app
+allow gmscore_app render_device:chr_file { ioctl open read write };
+
+# hal_audio_default
+allow hal_audio_default default_prop:file { getattr open read };
+allow hal_audio_default kmsg_device:chr_file { getattr };
+allow hal_audio_default nvdata_file:dir { search };
+allow hal_audio_default nvdata_file:file { getattr open read };
+allow hal_audio_default nvram_data_file:lnk_file { read };
+
+# hal_bluetooth_default
+allow hal_bluetooth_default default_prop:file { getattr open read };
+allow hal_bluetooth_default sysfs:file { write };
+allow hal_bluetooth_default ttyMT_device:chr_file { ioctl open read write };
+
+# hal_camera_default
+allow hal_camera_default CAM_CAL_DRV_device:chr_file { ioctl open read write };
+allow hal_camera_default MAINAF_device:chr_file { ioctl open read write };
+allow hal_camera_default MTK_SMI_device:chr_file { ioctl open read };
+allow hal_camera_default camera_fdvt_device:chr_file { ioctl open read write };
+allow hal_camera_default camera_isp_device:chr_file { ioctl open read write };
+allow hal_camera_default debug_prop:property_service { set };
+allow hal_camera_default default_prop:file { getattr open read };
+allow hal_camera_default default_prop:property_service { set };
+allow hal_camera_default device:chr_file { ioctl open read write };
+allow hal_camera_default devmap_device:chr_file { ioctl open read };
+allow hal_camera_default gpu_device:chr_file { getattr ioctl open read write };
+allow hal_camera_default gpu_device:dir { search };
+allow hal_camera_default hal_graphics_allocator_default:binder { call };
+allow hal_camera_default hal_graphics_allocator_hwservice:hwservice_manager { find };
+allow hal_camera_default hal_graphics_mapper_hwservice:hwservice_manager { find };
+allow hal_camera_default init:unix_stream_socket { connectto };
+allow hal_camera_default kd_camera_hw_device:chr_file { ioctl open read write };
+allow hal_camera_default kmsg_device:chr_file { getattr };
+allow hal_camera_default nvdata_file:dir { search };
+allow hal_camera_default nvdata_file:file { getattr open read };
+allow hal_camera_default nvram_data_file:lnk_file { read };
+allow hal_camera_default proc:file { ioctl open read };
+allow hal_camera_default property_socket:sock_file { write };
+allow hal_camera_default render_device:chr_file { ioctl open read write };
+allow hal_camera_default self:capability { sys_nice };
+allow hal_camera_default sensorservice_service:service_manager { find };
+allow hal_camera_default servicemanager:binder { call };
+allow hal_camera_default sysfs:file { open read write };
+allow hal_camera_default system_prop:file { getattr open read };
+allow hal_camera_default system_prop:property_service { set };
+allow hal_camera_default system_server:binder { call };
+allow hal_camera_default system_server:unix_stream_socket { read write };
+
+# hal_graphics_composer_default
+allow hal_graphics_composer_default debug_prop:property_service { set };
+allow hal_graphics_composer_default default_prop:file { getattr open read };
+allow hal_graphics_composer_default proc:file { ioctl };
+allow hal_graphics_composer_default sysfs:file { open read };
+allow hal_graphics_composer_default system_prop:file { getattr open read };
+
+# hal_health_default
+allow hal_health_default sysfs:file { getattr open read };
+
+# hal_light_default
+allow hal_light_default sysfs:file { open read write };
+
+# hal_lineage_health_default
+allow hal_lineage_health_default sysfs:file { getattr open read write };
+
+# hal_memtrack_default
+allow hal_memtrack_default debugfs:file { getattr open read };
+
+# hal_sensors_default
+allow hal_sensors_default hwmsensor_device:chr_file { ioctl open read };
+allow hal_sensors_default null_device:chr_file { setattr };
+allow hal_sensors_default sysfs:file { getattr open read write };
+allow hal_sensors_default system_data_file:dir { add_name setattr write };
+allow hal_sensors_default system_data_file:file { create getattr open read write };
+allow hal_sensors_default system_data_file:lnk_file { read };
+
+# hal_wifi_default
+allow hal_wifi_default aee_tombstone_data_file:dir { open read search };
+allow hal_wifi_default nvdata_file:dir { search };
+allow hal_wifi_default nvdata_file:file { open read };
+allow hal_wifi_default nvram_data_file:lnk_file { read };
+allow hal_wifi_default sysfs:file { write };
+
+# kisd
+allow kisd default_prop:file { getattr open read };
+
+# logpersist
+allow logpersist cache_file:dir { add_name open read write };
+allow logpersist cache_file:file { append create getattr ioctl open };
+allow logpersist self:capability { dac_override };
+
+# mediacodec
+allow mediacodec default_prop:file { getattr open read };
+allow mediacodec proc:file { ioctl };
+allow mediacodec servicemanager:binder { call };
+allow mediacodec system_prop:file { getattr open read };
+
+# nvram_daemon
+allow nvram_daemon kmsg_device:chr_file { getattr };
+allow nvram_daemon shell_exec:file { execute execute_no_trans getattr open read };
+allow nvram_daemon toolbox_exec:file { execute execute_no_trans getattr open read };
+
+# pq_daemon
+allow pq_daemon debug_prop:property_service { set };
+allow pq_daemon init:unix_stream_socket { connectto };
+allow pq_daemon property_socket:sock_file { write };
+allow pq_daemon system_prop:file { getattr open read };
+allow pq_daemon system_prop:property_service { set };
+
+
+# surfaceflinger
+allow surfaceflinger hal_graphics_composer_default:file { getattr open read };
+
+# system_server
+allow system_server build_bootimage_prop:file { getattr open read };
+allow system_server hal_camera_default:binder { transfer };
+
+# tee
+allow tee rpmb_block_device:blk_file { ioctl };
+
+# toolbox
+allow toolbox frp_block_device:blk_file { setattr };
+allow toolbox self:capability { fsetid };
+
+# vendor_init
+allow vendor_init apexd_prop:file { read };
+allow vendor_init apk_data_file:dir { add_name write };
+allow vendor_init bootanim_system_prop:file { read };
+allow vendor_init cache_file:dir { remove_name write };
+allow vendor_init cache_file:file { unlink };
+allow vendor_init default_prop:file { read };
+allow vendor_init dhcp_data_file:dir { getattr setattr };
+allow vendor_init drm_data_file:dir { getattr };
+allow vendor_init nfc_socket:dir { getattr };
+allow vendor_init nvram_data_file:lnk_file { read };
+allow vendor_init proc:file { write };
+allow vendor_init radio_prop:file { read };
+allow vendor_init rootfs:dir { setattr };
+allow vendor_init system_data_file:dir { add_name remove_name setattr write };
+allow vendor_init system_data_file:lnk_file { create unlink };
+allow vendor_init system_prop:file { getattr open read };
+allow vendor_init tmpfs:dir { add_name create write };
+allow vendor_init wifi_data_file:dir { getattr };
+allow vendor_init wpa_socket:dir { getattr };
+
+# vold
+allow vold hal_bootctl_hwservice:hwservice_manager { find };

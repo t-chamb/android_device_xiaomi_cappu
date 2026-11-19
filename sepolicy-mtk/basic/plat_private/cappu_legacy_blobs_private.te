@@ -1,0 +1,4 @@
+# Rules like those in sepolicy/cappu_legacy_blobs.te whose domain or target is a platform-private
+# type, which vendor policy cannot name.
+allow storaged sysfs:file { getattr open read };
+allow vendor_init init_service_status_private_prop:file { read };

@@ -897,8 +897,10 @@ service bugreport /system/bin/dumpstate -d -p -B \
     oneshot
     keycodes 114 115 116
 
+# MediaTek network logging tool; only useful with MTK's debug apps, and it has no SELinux domain.
 service netdiag /system/vendor/bin/netdiag
     class main
+    disabled
 
 
 service nvram_daemon /system/vendor/bin/nvram_daemon
@@ -1225,8 +1227,10 @@ service emdlogger6 /system/vendor/bin/emdlogger6
 #sensor service (begin)
 #
 
+# Only asks init to start akmd09912, a magnetometer daemon this tablet does not have.
 service msensord /system/vendor/bin/msensord
     class main
+    disabled
     oneshot
 
 service s62xd /system/vendor/bin/s62xd
@@ -1411,10 +1415,12 @@ service MtkCodecService /system/vendor/bin/MtkCodecService
     group audio media sdcard_r
 
 # IMG GPU init
+# Exits with an error on every boot: the PowerVR services are brought up by the kernel driver.
 service pvrsrvctl /system/vendor/bin/pvrsrvctl --start
     class main
     user root
     group root
+    disabled
     oneshot
  
 # GuiExt Server init

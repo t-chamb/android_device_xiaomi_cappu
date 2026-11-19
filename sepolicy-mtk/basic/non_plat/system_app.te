@@ -2,7 +2,7 @@
 # MTK Policy Rule
 # ==============================================
 
-typeattribute system_app mlstrustedsubject;
+# cappu: system_app is no longer mlstrustedsubject (see platform_app.te).
 
 # Date : 2017/07/21
 # Purpose :[CdsInfo] read/ write WI-FI MAC address by NVRAM API

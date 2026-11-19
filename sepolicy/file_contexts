@@ -21,3 +21,8 @@
 /protect_s(/.*)?    u:object_r:protect_s_data_file:s0
 /persist(/.*)?      u:object_r:persist_data_file:s0
 /cust(/.*)?         u:object_r:rootfs:s0
+
+# Vendor services that otherwise run as init
+/(vendor|system/vendor)/bin/pq                                              u:object_r:pq_daemon_exec:s0
+/(vendor|system/vendor)/bin/hw/android\.hardware\.drm@1\.4-service\.clearkey u:object_r:hal_drm_default_exec:s0
+/(vendor|system/vendor)/bin/init\.cappu\.btaddr\.sh                          u:object_r:cappu_btaddr_exec:s0

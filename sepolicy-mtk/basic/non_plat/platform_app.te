@@ -2,7 +2,8 @@
 # MTK Policy Rule 
 # ==============================================
 
-typeattribute platform_app mlstrustedsubject;
+# cappu: platform_app is no longer mlstrustedsubject. Android 12 excludes MLS-trusted domains
+# from the rule that lets an app use its own data directory (SystemUI lost its preferences).
 
 # Date : 2017/07/03
 # Operation : Migration
