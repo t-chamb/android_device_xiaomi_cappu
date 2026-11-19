@@ -15,4 +15,40 @@ How it was produced:
   - `CPUSETS` off: MediaTek hotplug keeps only CPU0 online at boot and the
     3.18 cpuset code never re-adds cores, pinning every app to CPU0
   - `SDCARD_FS` off: sdcardfs oopses in `show_vfsmnt` shortly after boot
-  - `NETFILTER_XT_MATCH_OWNER` on: needed by netd's firewall rules
+- source patches on top of that commit (apply with `patch -p1`):
+  - `0001-random-do-not-block-dev-random-once-seeded.patch`: `/dev/random`
+    and `getrandom(GRND_RANDOM)` read from the non-blocking pool once it is
+    seeded, as mainline does since 5.6. The board has no hardware RNG and an
+    idle system credits about one bit of entropy per second, so anything
+    seeding itself from `/dev/random` (mbedTLS in the Sonos app) stalled for
+    minutes while holding the dynamic linker lock.
+  - `0002-mtk-uart-fix-four-ways-the-Bluetooth-port-lost-data.patch`:
+    Bluetooth failed to start about one time in three and its stack aborted
+    with HCI command timeouts. Four bugs in the MediaTek UART driver:
+    1. `old_status` (last CTS level) is not refreshed while the port is
+       closed; when the status interrupt for the low level at open was not
+       seen, the later rise showed no change and the serial core's
+       `hw_stopped` was never released. CTS is now compared with the core's
+       flow state as well.
+    2. `start_tx` did nothing when the holding register was still occupied,
+       and `stop_tx` had switched the transmit interrupt off, so nothing
+       restarted transmission. It now re-arms the interrupt.
+    3. The interrupt handler ran on another CPU while `set_termios` had LCR
+       switched to the divisor-latch/EFR view, where the IER address is the
+       divisor latch: its read-modify-write of "IER" wrote 0 into the real
+       IER, disabling receive and modem status interrupts. The interrupt
+       line is now disabled for the duration of `set_termios`.
+    4. A command was sent in the same 100 us in which `dev_wake` was raised;
+       the chip asserts CTS at once but drops data until it has woken up
+       (the lost command was the HCI timeout). Transmission now waits 15 ms
+       after waking the chip, like mainline's `hci_bcm`.
+  - `0003-audit-do-not-start-disabled.patch`: Xiaomi's tree initialises
+    `audit_initialized` to `AUDIT_DISABLED`, so the kernel never logged a
+    single SELinux denial. Needed to write policy.
+  - `0004-selinux-remove-the-forced-permissive-hack.patch`: the community
+    kernel this port started from overwrote every write to
+    `/sys/fs/selinux/enforce` with 0 ("Forced Permissive", commit 2b8d67240).
+- `NETFILTER_XT_MATCH_OWNER` must stay unset: it hides
+  `NETFILTER_XT_MATCH_QTAGUID`, which provides the same `owner` match plus
+  the per-UID accounting in `/proc/net/xt_qtaguid` that netd and
+  NetworkStatsService use on a kernel without eBPF.
