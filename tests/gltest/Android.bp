@@ -7,3 +7,13 @@ cc_test {
     static_libs: ["libglTest"],
     cflags: ["-DGL_GLEXT_PROTOTYPES", "-DEGL_EGLEXT_PROTOTYPES", "-Wall", "-Werror"],
 }
+
+// Lists the GPU driver's EGL configs and replays the config requests Flutter's
+// Impeller renderer makes at start-up (window and pbuffer, with and without MSAA).
+cc_test {
+    name: "cappu-egl-config-test",
+    srcs: ["egl_config_test.c"],
+    gtest: false,
+    shared_libs: ["libEGL"],
+    cflags: ["-Wall", "-Werror"],
+}

@@ -128,3 +128,8 @@ ro.vendor.media.omx.framework_binder=true
 # linear light and applies the sRGB curve again on every GPU-composited frame (washed-out
 # colours). The panel is plain sRGB, so colour management has nothing to do here anyway.
 ro.surface_flinger.use_color_management=false
+
+# The PowerVR DDK 1.7 EGL offers multisampled configs for windows only. Flutter's Impeller
+# renderer picks one, finds no matching pbuffer config and crashes (Sonos, any recent Flutter
+# app). Hide those configs so such renderers fall back to non-MSAA ones.
+debug.egl.hide_window_only_msaa=true
