@@ -396,3 +396,9 @@ $(call inherit-product-if-exists, vendor/xiaomi/cappu/cappu-vendor.mk)
 PRODUCT_DEX_PREOPT_DEFAULT_COMPILER_FILTER := speed
 # Do not force a filter for system_server: APEX system-server jars would then be compiled into
 # /data/dalvik-cache, which system_server refuses to execute (no fs-verity on this kernel).
+
+# Charging control (Settings > Battery > Charging control): the MediaTek battery driver's
+# Charging_Enable switch stops and resumes charging. The battery discharges while it is off,
+# so this is the "toggle" mode, not "bypass".
+PRODUCT_PACKAGES += \
+    vendor.lineage.health-service.default
