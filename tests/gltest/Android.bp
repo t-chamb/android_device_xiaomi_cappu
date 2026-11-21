@@ -17,3 +17,21 @@ cc_test {
     shared_libs: ["libEGL"],
     cflags: ["-Wall", "-Werror"],
 }
+
+// Checks whether glGetProgramBinary writes past GL_PROGRAM_BINARY_LENGTH (hwui shader cache).
+cc_test {
+    name: "cappu-progbin-test",
+    srcs: ["progbin_test.c"],
+    gtest: false,
+    shared_libs: ["libEGL", "libGLESv3"],
+    cflags: ["-Wall", "-Werror"],
+}
+
+// Loads the vendor Vulkan driver, lists the GPU and creates a device.
+cc_test {
+    name: "cappu-vk-test",
+    srcs: ["vk_test.c"],
+    gtest: false,
+    shared_libs: ["libvulkan"],
+    cflags: ["-Wall", "-Werror"],
+}
