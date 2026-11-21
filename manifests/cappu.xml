@@ -26,6 +26,8 @@
   <project path="packages/modules/NetworkStack" name="android_packages_modules_NetworkStack" remote="cappu" groups="pdk-cw-fs,pdk-fs" />
   <remove-project name="platform/system/bpf" />
   <project path="system/bpf" name="android_system_bpf" remote="cappu" groups="pdk" />
+  <remove-project name="LineageOS/android_system_core" />
+  <project path="system/core" name="android_system_core" remote="cappu" groups="pdk" />
   <remove-project name="LineageOS/android_system_libhidl" />
   <project path="system/libhidl" name="android_system_libhidl" remote="cappu" groups="pdk" />
   <remove-project name="LineageOS/android_system_netd" />

@@ -20,7 +20,7 @@ lunch lineage_cappu-userdebug
 mka systemimage bootimage recoveryimage
 ```
 
-`manifests/cappu.xml` adds this tree, the vendor blobs and the kernel, and replaces twelve
+`manifests/cappu.xml` adds this tree, the vendor blobs and the kernel, and replaces thirteen
 platform repositories with forks whose `cappu-lineage-19.1-port` branch carries the changes the
 Android 7 blobs and the 3.18 kernel need (no eBPF, pre-Treble HALs, older binder and ext4).
 
