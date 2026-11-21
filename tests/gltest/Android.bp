@@ -35,3 +35,13 @@ cc_test {
     shared_libs: ["libvulkan"],
     cflags: ["-Wall", "-Werror"],
 }
+
+// Draws a triangle with the vendor Vulkan driver and checks the pixels. vk_tri_*.h are the
+// SPIR-V of the two shaders in the test (glslangValidator -V --vn tri_{vert,frag}_spv).
+cc_test {
+    name: "cappu-vk-render-test",
+    srcs: ["vk_render_test.c"],
+    gtest: false,
+    shared_libs: ["libvulkan"],
+    cflags: ["-Wall", "-Werror"],
+}
