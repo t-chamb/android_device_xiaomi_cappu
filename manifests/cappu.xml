@@ -3,9 +3,9 @@
 <manifest>
   <remote name="cappu" fetch="https://github.com/t-chamb/" revision="cappu-lineage-19.1-port" />
 
-  <project path="device/xiaomi/cappu" name="android_device_xiaomi_cappu" remote="cappu" revision="cappu-lineage-19.1-ddk19" />
-  <project path="vendor/xiaomi/cappu" name="android_vendor_xiaomi_cappu" remote="cappu" revision="cappu-lineage-19.1-ddk19" />
-  <project path="kernel/xiaomi/cappu" name="android_kernel_xiaomi_cappu" remote="cappu" revision="cappu-lineage-19.1-ddk19" />
+  <project path="device/xiaomi/cappu" name="android_device_xiaomi_cappu" remote="cappu" />
+  <project path="vendor/xiaomi/cappu" name="android_vendor_xiaomi_cappu" remote="cappu" />
+  <project path="kernel/xiaomi/cappu" name="android_kernel_xiaomi_cappu" remote="cappu" />
 
   <!-- Platform repositories that carry changes for the Android 7 vendor blobs and the 3.18 kernel. -->
   <remove-project name="LineageOS/android_frameworks_av" />
