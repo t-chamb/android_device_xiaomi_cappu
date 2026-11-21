@@ -1,7 +1,7 @@
 LOCAL_PATH := $(call my-dir)
 
 include $(CLEAR_VARS)
-LOCAL_SRC_FILES := ui/GraphicBuffer.cpp ui/LegacyGui.cpp
+LOCAL_SRC_FILES := ui/GraphicBuffer.cpp ui/LegacyGui.cpp ui/GraphicBufferExtra.cpp
 LOCAL_SHARED_LIBRARIES := \
     libui \
     libgui \
@@ -73,7 +73,8 @@ LOCAL_VENDOR_MODULE := true
 include $(BUILD_SHARED_LIBRARY)
 
 include $(CLEAR_VARS)
-LOCAL_SRC_FILES := pvr_mutex.c
+LOCAL_SRC_FILES := pvr_mutex.c pvr_callstack.cpp
+LOCAL_SHARED_LIBRARIES := libutils
 LOCAL_MODULE := libshim_cappu_pvr
 LOCAL_MODULE_TAGS := optional
 LOCAL_VENDOR_MODULE := true

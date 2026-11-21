@@ -30,7 +30,7 @@ wifi.direct.interface=p2p0
 
 # hardware
 ro.hardware.egl=mtk
-ro.hardware.gralloc=mt8173.img
+ro.hardware.gralloc=mt8173
 ro.hardware.hwcomposer=mt8173
 ro.board.platform=mt8173
 ro.hardware=mt8173

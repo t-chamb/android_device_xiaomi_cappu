@@ -1414,15 +1414,6 @@ service MtkCodecService /system/vendor/bin/MtkCodecService
     user system
     group audio media sdcard_r
 
-# IMG GPU init
-# Exits with an error on every boot: the PowerVR services are brought up by the kernel driver.
-service pvrsrvctl /system/vendor/bin/pvrsrvctl --start
-    class main
-    user root
-    group root
-    disabled
-    oneshot
- 
 # GuiExt Server init
 service guiext-server /system/vendor/bin/guiext-server
     class main

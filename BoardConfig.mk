@@ -245,10 +245,10 @@ TARGET_LD_SHIM_LIBS := \
 	/system/vendor/lib/hw/hwcomposer.mt8173.so|libmtk_symbols.so \
 	/system/vendor/lib64/hw/hwcomposer.mt8173.so|libshim_ui.so \
 	/system/vendor/lib64/hw/hwcomposer.mt8173.so|libmtk_symbols.so \
-	/system/vendor/lib/hw/gralloc.mt8173.img.so|libshim_cappu_gralloc.so \
 	/system/vendor/lib/libsrv_um.so|libshim_cappu_pvr.so \
 	/system/vendor/lib64/libsrv_um.so|libshim_cappu_pvr.so \
-	/system/vendor/lib64/hw/gralloc.mt8173.img.so|libshim_cappu_gralloc.so \
+	/system/vendor/lib/hw/gralloc.mt8173.so|libshim_cappu_pvr.so \
+	/system/vendor/lib64/hw/gralloc.mt8173.so|libshim_cappu_pvr.so \
 	/system/vendor/lib/hw/audio.primary.mt8173.so|libshim_cappu_audio.so \
 	/system/vendor/lib64/hw/audio.primary.mt8173.so|libshim_cappu_audio.so \
 	/system/vendor/lib/libMtkOmxVenc.so|libshim_ui.so \

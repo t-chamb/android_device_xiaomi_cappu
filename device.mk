@@ -198,7 +198,6 @@ PRODUCT_PACKAGES += \
     init.mt8173.usb.rc \
     init.cappu.btaddr.sh \
     libshim_cappu_audio \
-    libshim_cappu_gralloc \
     libshim_cappu_omx \
     libshim_cappu_pvr \
     init.project.rc \

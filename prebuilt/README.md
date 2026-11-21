@@ -6,10 +6,11 @@ Android build never boots on this board.
 
 How it was produced:
 
-- source: branch `cappu-lineage-19.1-gcc` of
-  https://github.com/t-chamb/android_kernel_xiaomi_cappu, which is commit
-  `a3149ff2c` (the tree before the clang build changes) plus the defconfig
-  changes and the four fixes below, one commit each
+- source: branch `cappu-lineage-19.1-ddk19` of
+  https://github.com/t-chamb/android_kernel_xiaomi_cappu: commit `a3149ff2c`
+  (the tree before the clang build changes), the defconfig changes and the
+  four fixes below (branch `cappu-lineage-19.1-gcc`, one commit each), and the
+  PowerVR DDK 1.9 GPU driver described at the end
 - compiler: GCC 4.9 from the LineageOS 19.1 prebuilts
   (`aarch64-linux-android-4.9`, `arm-linux-androideabi-4.9`):
   `make O=out ARCH=arm64 CROSS_COMPILE=aarch64-linux-android- CROSS_COMPILE_ARM32=arm-linux-androidkernel- cappu_defconfig Image.gz-dtb`
@@ -56,3 +57,13 @@ How it was produced:
   `NETFILTER_XT_MATCH_QTAGUID`, which provides the same `owner` match plus
   the per-UID accounting in `/proc/net/xt_qtaguid` that netd and
   NetworkStatsService use on a kernel without eBPF.
+
+
+## PowerVR DDK 1.9
+
+The GPU kernel driver is DDK 1.9@4893595 (`drivers/misc/mediatek/gpu/mt8173/m1.9ED4893595`)
+together with the matching GED driver, both taken from the MT8173 tree at
+https://github.com/iiowoii3389/android_kernel_xiaomi_cappu (branch `lineage-15.1-test`). It pairs
+with the DDK 1.9 user-space driver in the vendor tree (`vendor/xiaomi/cappu/import-ddk19.py`).
+Compared with DDK 1.7 it runs WebGL content that faulted the GPU, and its Vulkan driver loads.
+The firmware is loaded at boot from `/vendor/firmware/rgx.fw.signed`.
