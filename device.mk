@@ -403,3 +403,8 @@ PRODUCT_DEX_PREOPT_DEFAULT_COMPILER_FILTER := speed
 # so this is the "toggle" mode, not "bypass".
 PRODUCT_PACKAGES += \
     vendor.lineage.health-service.default
+
+# Per-app process groups: the 3.18 kernel has no cgroup v2, so libprocessgroup uses the v1
+# cpuacct hierarchy instead. Without them, apps outlive a system_server restart.
+PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/configs/cgroups.json:$(TARGET_COPY_OUT_VENDOR)/etc/cgroups.json
