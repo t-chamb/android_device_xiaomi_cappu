@@ -133,3 +133,8 @@ ro.surface_flinger.use_color_management=false
 # renderer picks one, finds no matching pbuffer config and crashes (Sonos, any recent Flutter
 # app). Hide those configs so such renderers fall back to non-MSAA ones.
 debug.egl.hide_window_only_msaa=true
+
+# PowerVR DDK 1.9 keeps using a released surface after a surfaceless eglMakeCurrent: hwui's
+# glFinish while dropping its GPU context (memory trim after an app-crash dialog) crashed
+# system_server. Keep a 1x1 pbuffer current instead (frameworks/base hwui).
+debug.hwui.disable_surfaceless=true

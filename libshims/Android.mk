@@ -73,7 +73,7 @@ LOCAL_VENDOR_MODULE := true
 include $(BUILD_SHARED_LIBRARY)
 
 include $(CLEAR_VARS)
-LOCAL_SRC_FILES := pvr_mutex.c pvr_callstack.cpp
+LOCAL_SRC_FILES := pvr_callstack.cpp
 LOCAL_SHARED_LIBRARIES := libutils
 LOCAL_MODULE := libshim_cappu_pvr
 LOCAL_MODULE_TAGS := optional

@@ -1552,3 +1552,8 @@ on property:sys.boot_completed=1
 
 on property:apexd.status=ready
     mount none /system/etc/swcodec/ld.config.txt /apex/com.android.media.swcodec/etc/ld.config.txt bind
+
+# Debuggable builds start a shell on the serial console (ttyMT0, only reachable inside the case),
+# and Android then posts a "Serial console enabled" notification. Not useful on this tablet.
+on property:init.svc.console=running
+    stop console
